@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="br">
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -12,41 +12,52 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/js/foundation.min.js"></script>
     <script type="text/javascript" src="build/bundle.js"></script>
+
+	<style>
+	  .button-copied {
+		background-color: green;
+		color: white;
+		transition: background-color;
+	  }
+	</style>
   </head>
   <body>
     <div class="grid-container">
-      <div class="grid-x" style="margin-top: 50px;">
+      <div class="grid-x" style="margin-top: 2px;">
         <div class="cell small-8 small-offset-2">
-          <h1>Encrypt or decrypt a Message</h1>
-          <div id="error-message-password" class="callout alert hide">Password must be a minimum of 16 characters</div>
+          <!--<h1>Criptografia</h1>-->
+          <div id="error-message-password" class="callout alert hide">A senha deve ter no mínimo 16 caracteres</div>
           <form id="encryptForm">
-            <label for="key" style="margin-top: 50px;"><h4>🗝 Enter the encryption password (minimum 16 characters):</h4></label>
-            <input type="text" name="key" id="key" />
-
+            <!--<label for="key" style="margin-top: 50px;"><h4>🗝 Digite a senha de criptografia (mínimo de 16 caracteres):</h4></label>-->
+            <input type="hidden" name="key" id="key" value="CNDspqG6NoCybkp0P3XQirVBetmO9e" />
             <ul class="tabs" data-tabs id="options-tabs" style="margin-top: 50px;">
               <li class="tabs-title is-active">
-                <a href="#encryptTab" aria-selected="true">Encrypt</a>
+                <a href="#encryptTab" aria-selected="true">Criptografar</a>
               </li>
               <li class="tabs-title">
-                <a href="#decryptTab">Decrypt</a>
+                <a href="#decryptTab">Descriptografar</a>
               </li>
             </ul>
             <div class="tabs-content" data-tabs-content="options-tabs">
               <div class="tabs-panel is-active" id="encryptTab">
-                <label for="encrypt">Encrypt the following:</label>
+                <label for="encrypt">Criptografe o seguinte:</label>
                 <textarea name="encrypt" id="encrypt" rows="8"></textarea>
-                <input type="submit" class="button" value="Encrypt" />
-
-                <label for="encrypted">Result:</label>
+                <input type="submit" class="button" value="Criptografar" />
+				<button class="button" onclick="pasteFromClipboard()">Colar</button>
+				
+                <label for="encrypted">Resultado:</label>
                 <textarea id="encrypted" rows="8"></textarea>
+				<button id="copyButton1" class="button" onclick="copyToClipboard('encrypted');">Copiar</button>
               </div>
               <div class="tabs-panel" id="decryptTab">
-                <label for="decrypt">Decrypt the following:</label>
+                <label for="decrypt">Descriptografe o seguinte:</label>
                 <textarea name="decrypt" id="decrypt" rows="8"></textarea>
-                <input type="submit" class="button" value="Decrypt" />
-
-                <label for="decrypted">Result:</label>
+                <input type="submit" class="button" value="Descriptografar" />
+				<button class="button" onclick="pasteFromClipboard()">Colar</button>
+                
+				<label for="decrypted">Resultado:</label>
                 <textarea id="decrypted" rows="8"></textarea>
+				<button id="copyButton2" class="button" onclick="copyToClipboard('decrypted');">Copiar</button>
               </div>
             </div>
           </form>
@@ -54,6 +65,33 @@
       </div> <!-- /.grid-x -->
     </div> <!-- /.container -->
 
-    <script type="text/javascript">$(document).foundation();</script>
+    <script type="text/javascript">$(document).foundation();
+		function copyToClipboard(elementId) {
+		  var element = document.getElementById(elementId);
+		  element.select();
+		  element.setSelectionRange(0, 99999);
+
+		  document.execCommand("copy");
+
+		  var copyButtons = document.querySelectorAll('[id^="copyButton"]');
+		  copyButtons.forEach(function(copyButton) {
+			copyButton.textContent = "✔️ Copiado!";
+			copyButton.classList.add("button-copied");
+
+			setTimeout(function() {
+			  copyButton.textContent = "Copiar";
+			  copyButton.classList.remove("button-copied");
+			}, 2000);
+		  });
+		}
+		function pasteFromClipboard() {
+		  navigator.clipboard.readText().then(function(text) {
+			var activeTabId = document.querySelector('.tabs-title.is-active a').getAttribute('href');
+			var textareaId = activeTabId === '#encryptTab' ? 'encrypt' : 'decrypt';
+
+			document.getElementById(textareaId).value = text;
+		  });
+		}
+	</script>
   </body>
 </html>
